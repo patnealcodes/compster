@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 const options = [
   { link: '/', title: 'Home' },
-  { link: '/pokemon', title: 'Pokémon' },
+  { link: '/pokedex', title: 'Pokédex' },
   { link: '/teams', title: 'Teams' },
 ];
 
