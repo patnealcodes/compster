@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import axios from 'axios'
-import { PokemonEntry, Pokedex } from '../types/PokeAPI'
 import { Link } from 'react-router-dom'
+
+import { PokemonEntry, Pokedex } from '../types/PokeAPI'
+
+import { CompsterContext } from '../contexts/CompsterContext'
 
 function getIDFromURL(url: string) {
   const re = new RegExp(/pokemon-species\/(\d+)\//)
@@ -12,14 +15,25 @@ function getIDFromURL(url: string) {
 const PokedexPage = () => {
   const JOHTO = 3
   const [pokedex, setPokedex] = useState({} as Pokedex)
+  const {state, dispatch} = useContext(CompsterContext)
 
   // TODO: Set this up with Context
   useEffect(() => {
-    axios.get(`https://pokeapi.co/api/v2/pokedex/${JOHTO}`)
-    .then(({ data }: any) => {
-      setPokedex(data)
-    })
-  }, [])
+    if( !state.pokedex ) {
+      axios.get(`https://pokeapi.co/api/v2/pokedex/${JOHTO}`)
+      .then(({ data }: any) => {
+        setPokedex(data)
+        dispatch({
+          type: 'setPokedex',
+          payload: {
+            pokedex: data
+          }
+        })
+      })
+    } else {
+      setPokedex(state.pokedex)
+    }
+  }, [dispatch, state])
 
   return (
     <div>

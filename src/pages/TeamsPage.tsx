@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { CompsterContext } from '../contexts/CompsterContext'
 
 const TeamsPage = () => {
+  const { state } = useContext(CompsterContext)
+
   return (
     <div>
-      Teams
+      Teams: {JSON.stringify(state.currentTeam)}
     </div>
   )
 }

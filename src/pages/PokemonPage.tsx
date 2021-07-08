@@ -1,8 +1,13 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import axios, { AxiosResponse } from 'axios'
+
+import { IconButton } from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 import { Pokemon, PokemonType } from '../types/PokeAPI'
 import TypeBadge from '../components/shared/TypeBadge'
+import { CompsterContext } from '../contexts/CompsterContext';
 
 interface PokemonCardProps {
   info: Pokemon
@@ -15,6 +20,8 @@ const PokemonCard = ({ info }: PokemonCardProps) => {
     sprites
   } = info
 
+  const { state, dispatch } = useContext(CompsterContext)
+
   function renderTypesList() {
     function renderTypes() {
       return types.map(({ type }: PokemonType, i: number) => {
@@ -26,9 +33,8 @@ const PokemonCard = ({ info }: PokemonCardProps) => {
         if( i !== 0 ) styles['paddingLeft'] = '.5em'
 
         return (
-          <li style={styles}>
+          <li key={i} style={styles}>
             <TypeBadge
-              key={i}
               type={type.name}
             />
           </li>
@@ -45,8 +51,45 @@ const PokemonCard = ({ info }: PokemonCardProps) => {
     )
   }
 
+  const TeamControls = () => {
+    if( state.currentTeam.find(id => id === info.id) ) {
+      return (<>
+        <IconButton
+          aria-label="delete"
+          onClick={() => {
+            dispatch({
+              type: 'removeFromTeam',
+              payload: { id: info.id }
+            })
+          }}
+        >
+          <RemoveIcon />
+        </IconButton>
+        <span>Remove {info.name} from Team</span>
+      </>)
+    } else {
+      return (<>
+        <IconButton
+          aria-label="add"
+          disabled={state.currentTeam.length >= 6}
+          title={state.currentTeam.length >= 6 ? 'Team full!' : `Add ${info.name} to Team`}
+          onClick={() => {
+            dispatch({
+              type: 'addToTeam',
+              payload: { id: info.id }
+            })
+          }}
+        >
+          <AddIcon />
+        </IconButton>
+        <span>Add {info.name} to Team</span>
+      </>)
+    }
+  }
+
   return (
     <>
+      <TeamControls />
       <div>
         <img
           alt={name}
@@ -65,13 +108,24 @@ const PokemonCard = ({ info }: PokemonCardProps) => {
 const PokemonPage = ({match}: any) => {
   const pokemonID = match.params.id
   const [pokemon, setPokemon] = useState(null as Pokemon | null)
+  const { state, dispatch } = useContext(CompsterContext)
 
   useEffect(() => {
-    axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonID}`)
-    .then(({ data }: AxiosResponse<Pokemon>) => {
-      setPokemon(data)
-    })
-  }, [pokemonID])
+    if( state.cachedPokemon && !state.cachedPokemon[pokemonID] ) {
+      axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonID}`)
+      .then(({ data }: AxiosResponse<Pokemon>) => {
+        setPokemon(data)
+        dispatch({
+          type: 'cachePokemon',
+          payload: {
+            pokemon: data
+          }
+        })
+      })
+    } else {
+      setPokemon(state.cachedPokemon[pokemonID])
+    }
+  }, [pokemonID, state, dispatch])
   return (
     <div>
       {pokemon ? (
