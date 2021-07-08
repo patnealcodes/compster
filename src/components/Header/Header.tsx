@@ -1,17 +1,19 @@
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
+
 import logo from '../../logo.png'
+import HeaderMenu from './HeaderMenu';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     headerLogo: {
       width: '24px',
       transform: 'scale(1.25)'
+    },
+    linkStyle: {
+      textDecoration: 'none'
     },
     root: {
       flexGrow: 1,
@@ -27,8 +29,9 @@ function Header() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed">
+      <AppBar position="static">
         <Toolbar>
+          
           <IconButton edge="start" color="inherit" aria-label="menu">
             <img
               alt="Pokémon Compster Logo"
@@ -36,12 +39,12 @@ function Header() {
               src={logo}
             />
           </IconButton>
+
           <Typography variant="h6" className={classes.title}>
             Pokémon Compster
           </Typography>
-          <IconButton edge="start" color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
+
+          <HeaderMenu />
         </Toolbar>
       </AppBar>
     </div>

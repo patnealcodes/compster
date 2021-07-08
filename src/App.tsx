@@ -1,17 +1,32 @@
 import React from 'react';
-import logo from './logo.png';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom';
 
 import Header from './components/Header/Header';
 
+import HomePage from './pages/HomePage';
+import PokemonPage from './pages/PokemonPage';
+import TeamsPage from './pages/TeamsPage';
+
 function App() {
   return (
-    <div className="App">
+    <Router>
       <Header />
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-      </header>
-    </div>
+      <Switch>
+        <Route path="/pokemon">
+          <PokemonPage />
+        </Route>
+        <Route path="/Teams">
+          <TeamsPage />
+        </Route>
+        <Route path="/">
+          <HomePage />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
