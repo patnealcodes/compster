@@ -20,12 +20,14 @@ function App() {
       <CompsterProvider>
         <>
           <Header />
-          <Switch>
-            <Route path="/pokedex" component={PokedexPage} />
-            <Route path="/pokemon/:id" component={PokemonPage} />
-            <Route path="/Teams" component={TeamsPage} />
-            <Route path="/" component={HomePage} />
-          </Switch>
+          <div style={{ padding: '10px' }}>
+            <Switch>
+              <Route path="/pokedex" component={PokedexPage} />
+              <Route path="/pokemon/:id" component={PokemonPage} />
+              <Route path="/Teams" component={TeamsPage} />
+              <Route path="/" component={HomePage} />
+            </Switch>
+          </div>
           <CurrentTeamBar />
         </>
       </CompsterProvider>

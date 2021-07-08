@@ -1,13 +1,11 @@
 import React, {useEffect, useState, useContext} from 'react'
 import axios, { AxiosResponse } from 'axios'
 
-import { IconButton } from '@material-ui/core'
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
-
-import { Pokemon, PokemonType } from '../types/PokeAPI'
+import { Pokemon, PokemonType, Type } from '../types/PokeAPI'
 import TypeBadge from '../components/shared/TypeBadge'
 import { CompsterContext } from '../contexts/CompsterContext';
+import StatsChart from '../components/StatsChart/StatsChart';
+import { TeamControls, TYPE_COLOR_MAP } from '../helpers/helpers';
 
 interface PokemonCardProps {
   info: Pokemon
@@ -17,10 +15,9 @@ const PokemonCard = ({ info }: PokemonCardProps) => {
   const {
     name,
     types,
-    sprites
+    sprites,
+    stats
   } = info
-
-  const { state, dispatch } = useContext(CompsterContext)
 
   function renderTypesList() {
     function renderTypes() {
@@ -51,55 +48,27 @@ const PokemonCard = ({ info }: PokemonCardProps) => {
     )
   }
 
-  const TeamControls = () => {
-    if( state.currentTeam.find(id => id === info.id) ) {
-      return (<>
-        <IconButton
-          aria-label="delete"
-          onClick={() => {
-            dispatch({
-              type: 'removeFromTeam',
-              payload: { id: info.id }
-            })
-          }}
-        >
-          <RemoveIcon />
-        </IconButton>
-        <span>Remove {info.name} from Team</span>
-      </>)
-    } else {
-      return (<>
-        <IconButton
-          aria-label="add"
-          disabled={state.currentTeam.length >= 6}
-          title={state.currentTeam.length >= 6 ? 'Team full!' : `Add ${info.name} to Team`}
-          onClick={() => {
-            dispatch({
-              type: 'addToTeam',
-              payload: { id: info.id }
-            })
-          }}
-        >
-          <AddIcon />
-        </IconButton>
-        <span>Add {info.name} to Team</span>
-      </>)
-    }
+  function getPrimaryColorFromTypes(types: PokemonType[]): Type {
+    const name = types[0].type.name
+    return TYPE_COLOR_MAP[name].primary as Type
   }
 
   return (
     <>
-      <TeamControls />
+      <TeamControls id={info.id} name={info.name} />
       <div>
         <img
           alt={name}
           src={sprites.other['official-artwork'].front_default}
-          style={{ maxWidth: '100%  ' }}
+          style={{ margin: '0 auto', maxWidth: '75%', transform: 'scaleX(-1)' }}
         />
       </div>
       <h1>{name.toUpperCase()}</h1>
-      <ul>
-        <li>Type{types.length > 1 && 's'}: {renderTypesList()}</li>
+      <ul style={{ margin: 0, padding: 0 }}>
+        <li>{renderTypesList()}</li>
+        <li>
+          <StatsChart stats={stats} typeColor={getPrimaryColorFromTypes(types)} />
+        </li>
       </ul>
     </>
   )

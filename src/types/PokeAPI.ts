@@ -47,7 +47,10 @@ export interface PokemonSprites {
 }
 
 export interface PokemonStat {
-  stat: any
+  stat: {
+    name: string
+    url: string
+  }
   effort: number
   base_stat: number
 }
