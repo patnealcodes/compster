@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { VictoryArea, VictoryChart, VictoryChartProps, VictoryGroup, VictoryLabel, VictoryPolarAxis, VictoryTheme } from "victory"
+import { VictoryArea, VictoryChart, VictoryChartProps, VictoryContainer, VictoryGroup, VictoryLabel, VictoryPolarAxis, VictoryTheme } from "victory"
 import { PokemonStat, Type } from "../../types/PokeAPI"
 
 interface StatsChartProps extends VictoryChartProps {
@@ -30,9 +30,19 @@ const StatsChart = (props: StatsChartProps) => {
   }
 
   return (
-    <VictoryChart polar
-      theme={VictoryTheme.material}
+    <VictoryChart
+      containerComponent={
+        <VictoryContainer
+          style={{
+            pointerEvents: "auto",
+            userSelect: "auto",
+            touchAction: "auto"
+          }}
+        />
+      }
       domain={{ y: [ 0, 1 ] }}
+      polar
+      theme={VictoryTheme.material}
     >
       <VictoryGroup colorScale={[props.typeColor]}
         style={{ data: { fillOpacity: 0.2, strokeWidth: 2 } }}
