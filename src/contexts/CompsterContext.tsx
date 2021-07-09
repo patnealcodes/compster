@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, useReducer } from 'react'
+import { createContext, Dispatch, useReducer } from 'react'
 import { Pokedex, Pokemon } from '../types/PokeAPI'
 
 interface CachedPokemon {
@@ -12,8 +12,8 @@ interface CompsterContextState {
 }
 
 interface CompsterContextAction {
-  type: 'addToTeam' | 'removeFromTeam' | 'setPokedex' | 'cachePokemon'
-  payload: {
+  type: 'addToTeam' | 'removeFromTeam' | 'clearTeam' | 'setPokedex' | 'cachePokemon'
+  payload?: {
     id?: number
     pokedex?: Pokedex,
     pokemon?: Pokemon
@@ -34,17 +34,19 @@ const reducer = (state: CompsterContextState, { type, payload }: CompsterContext
   let currentTeam = [...state.currentTeam]
   switch(type) {
     case 'addToTeam':
-      if( payload.id ) currentTeam.push(payload.id)
+      if( payload && payload.id ) currentTeam.push(payload.id)
       return { ...state, currentTeam }
     case 'removeFromTeam':
-      currentTeam = currentTeam.filter(id => id !== payload.id)
+      currentTeam = currentTeam.filter(id => id !== (payload||{}).id)
       return { ...state, currentTeam }
+    case 'clearTeam':
+      return { ...state, currentTeam: []}
     case 'setPokedex':
-      const pokedex = payload.pokedex
+      const pokedex = (payload||{}).pokedex
       return { ...state, pokedex }
     case 'cachePokemon':
       const cachedPokemon = state.cachedPokemon
-      if( payload.pokemon && !cachedPokemon[payload.pokemon.id] ) {
+      if( payload && payload.pokemon && !cachedPokemon[payload.pokemon.id] ) {
         cachedPokemon[payload.pokemon.id] = payload.pokemon
       }
       return {...state, cachedPokemon}

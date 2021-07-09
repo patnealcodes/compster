@@ -1,12 +1,15 @@
-import React, { useEffect, useContext, useState } from 'react'
+import { useEffect, useContext, useState } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+
+import { CircularProgress, createStyles, makeStyles, Paper } from '@material-ui/core'
 
 import { PokemonEntry, Pokedex } from '../types/PokeAPI'
 
 import { CompsterContext } from '../contexts/CompsterContext'
-import { createStyles, makeStyles, Paper } from '@material-ui/core'
 import { TeamControls } from '../helpers/helpers'
+import CurrentTeamBar from '../components/Teams/CurrentTeamBar';
+import { capitalize } from '@material-ui/core'
 
 function getIDFromURL(url: string) {
   const re = new RegExp(/pokemon-species\/(\d+)\//)
@@ -24,6 +27,11 @@ const useStyles = makeStyles(() =>
       marginBottom: '10px',
       padding: '0 10px 0 0'
     },
+    progressContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      width: '100%'
+    }
   }),
   )
 
@@ -51,30 +59,37 @@ const PokedexPage = () => {
   }, [dispatch, state])
 
   return (
-    <>
-      {pokedex.pokemon_entries && pokedex.pokemon_entries.map(({ pokemon_species }: PokemonEntry) => {
-        const {url, name} = pokemon_species
-        const dexID = getIDFromURL(url)[1]
-
-        return (
-          <Link
-            to={`/pokemon/${dexID}`}
-            style={{ textDecoration: 'none' }}
-          >
-            <Paper
-              className={classes.pokedexItem}
-              elevation={3}
-              variant="outlined"
+    pokedex.pokemon_entries ? (
+      <div style={{ marginBottom: '84px' }}>
+        {pokedex.pokemon_entries && pokedex.pokemon_entries.map(({ pokemon_species }: PokemonEntry) => {
+          const {url, name} = pokemon_species
+          const dexID = getIDFromURL(url)[1]
+  
+          return (
+            <Link
               key={dexID}
+              to={`/pokemon/${dexID}`}
+              style={{ textDecoration: 'none' }}
             >
-              <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${dexID}.png`} alt={name} />
-              <p>{name.toUpperCase()}</p>
-              <TeamControls id={parseInt(dexID as string)} name={name} />
-            </Paper>
-          </Link>
-        )
-      })}
-    </>
+              <Paper
+                className={classes.pokedexItem}
+                elevation={3}
+                variant="outlined"
+              >
+                <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${dexID}.png`} alt={name} />
+                <p>{capitalize(name)}</p>
+                <TeamControls id={parseInt(dexID as string)} name={name} />
+              </Paper>
+            </Link>
+          )
+        })}
+        <CurrentTeamBar />
+      </div>
+    ) : (
+      <div className={classes.progressContainer}>
+        <CircularProgress />
+      </div>
+    )
   )
 }
 

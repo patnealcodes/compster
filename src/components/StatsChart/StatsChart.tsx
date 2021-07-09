@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { VictoryArea, VictoryChart, VictoryChartProps, VictoryContainer, VictoryGroup, VictoryLabel, VictoryPolarAxis, VictoryTheme } from "victory"
 import { PokemonStat, Type } from "../../types/PokeAPI"
 
@@ -18,8 +17,6 @@ function formatStats(stats: PokemonStat[]) {
 const StatsChart = (props: StatsChartProps) => {
   const MAX_STATS: any = { 'hp': 255, 'attack': 134, 'defense': 230, 'special attack': 130, 'special defense': 230, 'speed': 130 }
 
-  const [data] = useState(processData(formatStats(props.stats)))
-
   function processData(data: any) {
     const makeDataArray = (d: any) => {
       return Object.keys(d).map((key) => {
@@ -28,6 +25,8 @@ const StatsChart = (props: StatsChartProps) => {
     }
     return makeDataArray(data)
   }
+
+  const data = processData(formatStats(props.stats))
 
   return (
     <VictoryChart

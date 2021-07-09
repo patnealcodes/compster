@@ -1,15 +1,37 @@
-import React, {useEffect, useState, useContext} from 'react'
+import {useEffect, useState, useContext} from 'react'
 import axios, { AxiosResponse } from 'axios'
 
-import { Pokemon, PokemonType, Type } from '../types/PokeAPI'
+import { capitalize, Typography, Paper, makeStyles, createStyles } from '@material-ui/core';
+
+import { Pokemon, PokemonType } from '../types/PokeAPI'
+import { getPrimaryColorFromTypes, TeamControls } from '../helpers/helpers';
+
 import TypeBadge from '../components/shared/TypeBadge'
 import { CompsterContext } from '../contexts/CompsterContext';
 import StatsChart from '../components/StatsChart/StatsChart';
-import { TeamControls, TYPE_COLOR_MAP } from '../helpers/helpers';
+import CurrentTeamBar from '../components/Teams/CurrentTeamBar';
 
 interface PokemonCardProps {
   info: Pokemon
 }
+
+const useStyles = makeStyles(_ =>
+  createStyles({
+    nameBar: {
+      alignItems: 'center',
+      background: '#eee',
+      display: 'flex',
+      justifyContent: 'space-between',
+      margin: '0 0 1em',
+      padding: '10px'
+    },
+    pokemonImage: {
+      margin: '0 auto',
+      maxWidth: '75%',
+      transform: 'scaleX(-1)'
+    }
+  }),
+)
 
 const PokemonCard = ({ info }: PokemonCardProps) => {
   const {
@@ -18,6 +40,8 @@ const PokemonCard = ({ info }: PokemonCardProps) => {
     sprites,
     stats
   } = info
+
+  const classes = useStyles();
 
   function renderTypesList() {
     function renderTypes() {
@@ -48,29 +72,27 @@ const PokemonCard = ({ info }: PokemonCardProps) => {
     )
   }
 
-  function getPrimaryColorFromTypes(types: PokemonType[]): Type {
-    const name = types[0].type.name
-    return TYPE_COLOR_MAP[name].primary as Type
-  }
-
   return (
-    <>
-      <TeamControls id={info.id} name={info.name} />
-      <div>
+    <div style={{ marginBottom: '84px' }}>
+      <div style={{ display: 'flex' }}>
         <img
           alt={name}
           src={sprites.other['official-artwork'].front_default}
-          style={{ margin: '0 auto', maxWidth: '75%', transform: 'scaleX(-1)' }}
+          className={classes.pokemonImage}
         />
       </div>
-      <h1>{name.toUpperCase()}</h1>
+      <Paper elevation={3} className={classes.nameBar}>
+        <Typography variant="h5">{capitalize(name)}</Typography>
+        <TeamControls id={info.id} name={info.name} />
+      </Paper>
       <ul style={{ margin: 0, padding: 0 }}>
         <li>{renderTypesList()}</li>
         <li>
           <StatsChart stats={stats} typeColor={getPrimaryColorFromTypes(types)} />
         </li>
       </ul>
-    </>
+      <CurrentTeamBar />
+    </div>
   )
 }
 
@@ -95,6 +117,7 @@ const PokemonPage = ({match}: any) => {
       setPokemon(state.cachedPokemon[pokemonID])
     }
   }, [pokemonID, state, dispatch])
+
   return (
     <div>
       {pokemon ? (

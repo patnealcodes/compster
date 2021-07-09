@@ -1,10 +1,8 @@
-import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from 'react-router-dom';
-import CurrentTeamBar from './components/CurrentTeamBar/CurrentTeamBar';
 
 import Header from './components/Header/Header';
 import { CompsterProvider } from './contexts/CompsterContext';
@@ -14,13 +12,13 @@ import PokedexPage from './pages/PokedexPage';
 import PokemonPage from './pages/PokemonPage';
 import TeamsPage from './pages/TeamsPage';
 
-function App() {
+const App = () => {
   return (
     <Router>
       <CompsterProvider>
         <>
           <Header />
-          <div style={{ padding: '10px' }}>
+          <div style={{ margin: '56px 0 0', padding: '10px' }}>
             <Switch>
               <Route path="/pokedex" component={PokedexPage} />
               <Route path="/pokemon/:id" component={PokemonPage} />
@@ -28,7 +26,6 @@ function App() {
               <Route path="/" component={HomePage} />
             </Switch>
           </div>
-          <CurrentTeamBar />
         </>
       </CompsterProvider>
     </Router>

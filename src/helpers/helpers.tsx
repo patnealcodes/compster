@@ -5,6 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
 import { CompsterContext } from "../contexts/CompsterContext"
+import { PokemonType, Type } from "../types/PokeAPI";
 
 export const TYPE_COLOR_MAP = {
   normal: {
@@ -86,6 +87,11 @@ interface TeamControlsProps {
   name: string
 }
 
+export function getPrimaryColorFromTypes(types: PokemonType[]): Type {
+  const name = types[0].type.name
+  return TYPE_COLOR_MAP[name].primary as Type
+}
+
 export const TeamControls = ({id, name}: TeamControlsProps) => {
   const { state, dispatch } = useContext(CompsterContext)
 
@@ -94,6 +100,7 @@ export const TeamControls = ({id, name}: TeamControlsProps) => {
       <Fab
         color="secondary"
         aria-label="delete"
+        size="small"
         onClick={(e: SyntheticEvent) => {
           e.preventDefault()
           dispatch({
@@ -110,6 +117,7 @@ export const TeamControls = ({id, name}: TeamControlsProps) => {
       <Fab
         color="primary"
         aria-label="add"
+        size="small"
         disabled={state.currentTeam.length >= 6}
         title={state.currentTeam.length >= 6 ? 'Team full!' : `Add ${name} to Team`}
         onClick={(e: SyntheticEvent) => {

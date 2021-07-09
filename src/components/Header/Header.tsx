@@ -1,10 +1,9 @@
-import React from 'react';
-
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
 
 import logo from '../../logo.png'
 import HeaderMenu from './HeaderMenu';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,15 +28,17 @@ function Header() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           
           <IconButton edge="start" color="inherit" aria-label="menu">
-            <img
-              alt="Pokémon Compster Logo"
-              className={classes.headerLogo}
-              src={logo}
-            />
+            <Link to="/">
+              <img
+                alt="Pokémon Compster Logo"
+                className={classes.headerLogo}
+                src={logo}
+              />
+            </Link>
           </IconButton>
 
           <Typography variant="h6" className={classes.title}>

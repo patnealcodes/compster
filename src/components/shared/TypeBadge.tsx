@@ -1,4 +1,3 @@
-import React from 'react'
 import { Type } from '../../types/PokeAPI'
 import { TYPE_COLOR_MAP } from '../../helpers/helpers'
 
